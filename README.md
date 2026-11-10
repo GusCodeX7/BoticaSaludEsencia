@@ -1,2 +1,3 @@
 # BoticaSaludEsencia
-Sistema de Gestión de Inventarios y ventas par la botica BoticaSaludEsencia
+
+Estructura inicial MVC para el trabajo colaborativo del Hito 1.
