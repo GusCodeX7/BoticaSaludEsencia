@@ -1,29 +1,43 @@
 <?php
 
-require_once __DIR__ . '/../modelos/Lote.php';
+require_once __DIR__ . '/../config/Conexion.php';
 
-class LoteController
+class Lote
 {
+    private $conexion;
+
+    public function __construct()
+    {
+        $this->conexion = Conexion::conectar();
+    }
+
     public function listar()
     {
-        $lote = new Lote();
-        return $lote->listar();
+        $sql = "SELECT lotes.*, medicamentos.nombre AS medicamento
+                FROM lotes
+                INNER JOIN medicamentos
+                ON lotes.id_medicamento = medicamentos.id_medicamento
+                ORDER BY lotes.id_lote DESC";
+
+        $consulta = $this->conexion->prepare($sql);
+        $consulta->execute();
+
+        return $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function registrar($id_medicamento, $codigo_lote, $cantidad, $fecha_vencimiento)
     {
-        if ($id_medicamento <= 0 || $cantidad <= 0 ||
-            empty($codigo_lote) || empty($fecha_vencimiento)) {
-            return false;
-        }
+        $sql = "INSERT INTO lotes
+                (id_medicamento, codigo_lote, cantidad, fecha_vencimiento)
+                VALUES (?, ?, ?, ?)";
 
-        $lote = new Lote();
+        $consulta = $this->conexion->prepare($sql);
 
-        return $lote->registrar(
+        return $consulta->execute([
             $id_medicamento,
             $codigo_lote,
             $cantidad,
             $fecha_vencimiento
-        );
+        ]);
     }
 }
