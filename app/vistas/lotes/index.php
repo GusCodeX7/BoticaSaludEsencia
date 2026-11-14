@@ -1,76 +1,46 @@
 <?php
 require_once __DIR__ . '/../../controladores/LoteController.php';
-
+require_once __DIR__ . '/../../controladores/MedicamentoController.php';
 $controlador = new LoteController();
-$mensaje = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id_medicamento = $_POST["id_medicamento"] ?? 0;
-    $codigo_lote = trim($_POST["codigo_lote"] ?? "");
-    $cantidad = $_POST["cantidad"] ?? 0;
-    $fecha_vencimiento = $_POST["fecha_vencimiento"] ?? "";
-
-    if ($controlador->registrar(
-        $id_medicamento,
-        $codigo_lote,
-        $cantidad,
-        $fecha_vencimiento
-    )) {
-        $mensaje = "Lote registrado correctamente";
+$medicamentos = (new MedicamentoController())->index();
+$mensaje = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guardar_lote') {
+    $id = filter_var($_POST['id_medicamento'] ?? '', FILTER_VALIDATE_INT);
+    $cantidad = filter_var($_POST['cantidad'] ?? '', FILTER_VALIDATE_INT);
+    $codigo = trim($_POST['codigo_lote'] ?? '');
+    $fecha = $_POST['fecha_vencimiento'] ?? '';
+    $fechaValida = DateTime::createFromFormat('!Y-m-d', $fecha);
+    if (!$id || !$cantidad || $cantidad <= 0 || $codigo === '' || !$fechaValida || $fechaValida->format('Y-m-d') !== $fecha) {
+        $mensaje = 'Completa correctamente los datos del lote.';
     } else {
-        $mensaje = "Error al registrar el lote";
+        try {
+            if ($controlador->registrar($id, $codigo, $cantidad, $fecha)) {
+                header('Location: ?modulo=lotes&ok=1');
+                exit;
+            }
+            $mensaje = 'No se pudo registrar el lote.';
+        } catch (PDOException $e) { $mensaje = 'No se pudo registrar el lote. Verifica el medicamento seleccionado.'; }
     }
 }
-
+if (isset($_GET['ok'])) $mensaje = 'Lote registrado correctamente.';
 $lotes = $controlador->listar();
 ?>
-
-<h2>Registro de Lotes</h2>
-
-<p><?php echo htmlspecialchars($mensaje); ?></p>
-
-<form method="POST">
-    <label>ID del medicamento:</label>
-    <input type="number" name="id_medicamento" min="1" required>
-
-    <br><br>
-
-    <label>Codigo del lote:</label>
-    <input type="text" name="codigo_lote" required>
-
-    <br><br>
-
-    <label>Cantidad:</label>
-    <input type="number" name="cantidad" min="1" required>
-
-    <br><br>
-
-    <label>Fecha de vencimiento:</label>
-    <input type="date" name="fecha_vencimiento" required>
-
-    <br><br>
-
-    <button type="submit">Guardar lote</button>
+<h2>Lotes</h2>
+<p>Registro de lotes y control de cantidades por fecha de vencimiento.</p>
+<?php if ($mensaje): ?><p class="mensaje"><?= htmlspecialchars($mensaje) ?></p><?php endif; ?>
+<form method="post" action="?modulo=lotes">
+<input type="hidden" name="accion" value="guardar_lote">
+<label>Medicamento<select name="id_medicamento" required><option value="">Seleccionar</option>
+<?php foreach ($medicamentos as $m): ?><option value="<?= (int)$m['id_medicamento'] ?>"><?= htmlspecialchars($m['nombre']) ?></option><?php endforeach; ?>
+</select></label>
+<label>Código de lote<input name="codigo_lote" required maxlength="50"></label>
+<label>Cantidad<input name="cantidad" type="number" min="1" required></label>
+<label>Fecha de vencimiento<input name="fecha_vencimiento" type="date" required></label>
+<button type="submit">Guardar lote</button>
 </form>
-
-<h2>Lista de Lotes</h2>
-
-<table border="1" cellpadding="8">
-    <tr>
-        <th>ID</th>
-        <th>Medicamento</th>
-        <th>Codigo de lote</th>
-        <th>Cantidad</th>
-        <th>Vencimiento</th>
-    </tr>
-
-    <?php foreach ($lotes as $lote) { ?>
-    <tr>
-        <td><?php echo (int)$lote["id_lote"]; ?></td>
-        <td><?php echo htmlspecialchars($lote["medicamento"]); ?></td>
-        <td><?php echo htmlspecialchars($lote["codigo_lote"]); ?></td>
-        <td><?php echo (int)$lote["cantidad"]; ?></td>
-        <td><?php echo htmlspecialchars($lote["fecha_vencimiento"]); ?></td>
-    </tr>
-    <?php } ?>
+<h3>Lotes registrados</h3>
+<table><tr><th>ID</th><th>Medicamento</th><th>Código</th><th>Cantidad</th><th>Vencimiento</th></tr>
+<?php foreach ($lotes as $l): ?>
+<tr><td><?= (int)$l['id_lote'] ?></td><td><?= htmlspecialchars($l['medicamento']) ?></td><td><?= htmlspecialchars($l['codigo_lote']) ?></td><td><?= (int)$l['cantidad'] ?></td><td><?= htmlspecialchars($l['fecha_vencimiento']) ?></td></tr>
+<?php endforeach; ?>
 </table>
