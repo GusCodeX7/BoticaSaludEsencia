@@ -1,3 +1,3 @@
 # BoticaSaludEsencia
 
-Estructura inicial MVC para el trabajo colaborativo del Hito 1.
+PROYECTO CON ARQUITECTURA MVC BOTICASALUDESENCIA
