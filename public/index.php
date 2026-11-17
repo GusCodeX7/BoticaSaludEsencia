@@ -1,7 +1,7 @@
 <?php
 // Página de inicio y rutas sencillas para mostrar las vistas del Hito 1.
 $modulo = $_GET['modulo'] ?? 'inicio';
-$permitidos = ['inicio', 'medicamentos', 'usuarios', 'lotes', 'ventas', 'inventario'];
+$permitidos = ['inicio', 'medicamentos', 'usuarios', 'lotes', 'ventas', 'inventario', 'alertas'];
 if (!in_array($modulo, $permitidos, true)) { $modulo = 'inicio'; }
 $titulo = ucfirst($modulo);
 ?>
@@ -20,6 +20,7 @@ $titulo = ucfirst($modulo);
     <a href="?modulo=medicamentos">Medicamentos</a>
     <a href="?modulo=lotes">Lotes</a>
     <a href="?modulo=inventario">Inventario</a>
+    <a href="?modulo=alertas">Alertas</a>
     <a href="?modulo=ventas">Ventas</a>
     <a href="?modulo=usuarios">Usuarios</a>
 </nav>
