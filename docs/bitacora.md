@@ -30,34 +30,40 @@ El módulo Usuarios cuenta con su modelo,
 controlador y vista inicial.
 
 La conexión a MySQL fue verificada correctamente.
----
 
 
-### Integrante: Alexandra-Robladillo
-*Rama:* Alexandra-Robladillo
+## Hito 2 - Avance individual
+
+### Integrante: Crispin Gustavo
+**Usuario GitHub:** GusCodeX7  
+**Rama:** Crispin-Gustavo
 
 ### Actividades realizadas
 
-- Se incorporaron los archivos compartidos del proyecto utilizando la estructura MVC.
-- Se desarrolló el modelo Venta.php para consultar y registrar ventas.
-- Se creó el modelo DetalleVenta.php para registrar y consultar los medicamentos vendidos.
-- Se implementó VentaController.php para comunicar el modelo con la vista.
-- Se creó la vista ventas/index.php con el formulario de registro y la tabla de ventas.
-- Se implementó el cálculo del total de las ventas.
-- Se agregó el descuento automático del stock de medicamentos por lotes.
-- Se implementaron transacciones MySQL para guardar las ventas y sus detalles.
-- Se verificó la sintaxis de los modelos y del controlador utilizando PHP 8.3.30.
-- Se subieron los cambios a la rama Alexandra-Robladillo en GitHub.
+- Se actualizó el modelo Usuario.php.
+- Se modificó la vista usuarios/index.php.
+- Se agregó el modelo Inventario.php.
+- Se creó la vista inventario/index.php.
+- Se incorporó la vista alertas/index.php.
+- Se actualizó public/index.php para integrar los módulos.
+- Se agregó y organizó public/css/estilo.css.
+- Se realizó un Pull Request de Crispin-Gustavo hacia main.
 
-### Commits realizados
+### Archivos trabajados
 
-1. Agregar modelos de ventas y detalle de ventas
-2. Agregar controlador de ventas
-3. Agregar vista del modulo de ventas
-4. Actualizar registro de ventas y control de stock
+- app/modelos/Usuario.php
+- app/vistas/usuarios/index.php
+- app/modelos/Inventario.php
+- app/vistas/inventario/index.php
+- app/vistas/alertas/index.php
+- public/index.php
+- public/css/estilo.css
 
-### Estado del módulo
+### Estado
 
-El módulo Ventas cuenta con sus modelos, controlador y vista de registro.
+- Los módulos Inventario y Alertas fueron probados 
+- Se verificó el funcionamiento del
+botón Reponer.
 
-Se implementó el registro de ventas, el cálculo del total y el descuento de stock mediante transacciones.
+- La rama Crispin-Gustavo contiene los cambios
+correspondientes al avance individual del Hito.
