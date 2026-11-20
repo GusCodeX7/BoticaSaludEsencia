@@ -31,6 +31,33 @@ controlador y vista inicial.
 
 La conexión a MySQL fue verificada correctamente.
 
+## Hito 3 - Correcciones del módulo Ventas
+
+
+### Integrante: Alexandra-Robladillo
+**Rama:** Alexandra-Robladillo
+
+### Actividades realizadas
+
+- Se revisó el funcionamiento de los archivos del módulo Ventas.
+- Se agregó una validación del precio en el modelo Venta.php.
+- Se ajustó el formato del constructor en DetalleVenta.php.
+- Se organizó el método guardar() en VentaController.php.
+- Se mejoró la presentación del código en ventas/index.php.
+- Se verificó la sintaxis de los archivos PHP.
+- Se prepararon los commits individuales con el prefijo fix:.
+- Se realizaron pruebas de registro y visualización de ventas en el entorno local.
+
+### Commits realizados
+
+1. fix: valida el precio en el modelo Venta
+2. fix: ordena el constructor de DetalleVenta
+3. fix: ajusta el formato de VentaController
+4. fix: ajusta el formato de la vista de ventas
+
+### Estado actual
+
+El módulo Ventas permite registrar y visualizar ventas correctamente en el entorno local. Se realizaron ajustes en los archivos del modelo, controlador y vista, manteniendo la estructura MVC y el funcionamiento existente.
 
 ## Hito 2 - Avance individual
 
@@ -67,3 +94,4 @@ botón Reponer.
 
 - La rama Crispin-Gustavo contiene los cambios
 correspondientes al avance individual del Hito.
+

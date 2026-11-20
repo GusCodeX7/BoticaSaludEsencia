@@ -20,9 +20,6 @@ class VentaController
     // Registrar venta con sus productos
     public function guardar(int $idUsuario, array $productos): string
     {
-        return $this->modelo->registrarCompleta(
-            $idUsuario,
-            $productos
-        );
+        return $this->modelo->registrarCompleta($idUsuario, $productos);
     }
 }
