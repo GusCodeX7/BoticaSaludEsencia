@@ -40,5 +40,7 @@ class Lote
             $fecha_vencimiento
         ]);
         
+        
     }
+    
 }
