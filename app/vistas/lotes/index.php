@@ -45,4 +45,6 @@ $lotes = $controlador->listar();
 <tr><td><?= (int)$l['id_lote'] ?></td><td><?= htmlspecialchars($l['medicamento']) ?></td><td><?= htmlspecialchars($l['codigo_lote']) ?></td><td><?= (int)$l['cantidad'] ?></td><td><?= htmlspecialchars($l['fecha_vencimiento']) ?></td></tr>
 <?php endforeach; ?>
 
+
+
 </table>
