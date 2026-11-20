@@ -39,6 +39,6 @@ class Lote
             $cantidad,
             $fecha_vencimiento
         ]);
+        
     }
-    
 }
