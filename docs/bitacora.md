@@ -32,47 +32,31 @@ controlador y vista inicial.
 La conexión a MySQL fue verificada correctamente.
 ---
 
+## Hito 3 - Correcciones del módulo Ventas
 
 ### Integrante: Alexandra-Robladillo
-*Rama:* Alexandra-Robladillo
+**Rama:** Alexandra-Robladillo
 
 ### Actividades realizadas
 
-- Se incorporaron los archivos compartidos del proyecto utilizando la estructura MVC.
-- Se desarrolló el modelo Venta.php para consultar y registrar ventas.
-- Se creó el modelo DetalleVenta.php para registrar y consultar los medicamentos vendidos.
-- Se implementó VentaController.php para comunicar el modelo con la vista.
-- Se creó la vista ventas/index.php con el formulario de registro y la tabla de ventas.
-- Se implementó el cálculo del total de las ventas.
-- Se agregó el descuento automático del stock de medicamentos por lotes.
-- Se implementaron transacciones MySQL para guardar las ventas y sus detalles.
-- Se verificó la sintaxis de los modelos y del controlador utilizando PHP 8.3.30.
-- Se subieron los cambios a la rama Alexandra-Robladillo en GitHub.
+- Se revisó el funcionamiento de los archivos del módulo Ventas.
+- Se agregó una validación del precio en el modelo Venta.php.
+- Se ajustó el formato del constructor en DetalleVenta.php.
+- Se organizó el método guardar() en VentaController.php.
+- Se mejoró la presentación del código en ventas/index.php.
+- Se verificó la sintaxis de los archivos PHP.
+- Se prepararon los commits individuales con el prefijo fix:.
+- Se realizaron pruebas de registro y visualización de ventas en el entorno local.
 
 ### Commits realizados
 
-1. Agregar modelos de ventas y detalle de ventas
-2. Agregar controlador de ventas
-3. Agregar vista del modulo de ventas
-4. Actualizar registro de ventas y control de stock
+1. fix: valida el precio en el modelo Venta
+2. fix: ordena el constructor de DetalleVenta
+3. fix: ajusta el formato de VentaController
+4. fix: ajusta el formato de la vista de ventas
 
-### Estado del módulo
-
-El módulo Ventas cuenta con sus modelos, controlador y vista de registro.
-
-Se implementó el registro de ventas, el cálculo del total y el descuento de stock mediante transacciones.
-## Avance del 70 % - Módulo Ventas
-### Integrante: Alexandra-Robladillo
-**Rama:** Alexandra-Robladillo
-### Actividades realizadas
-- Se revisaron los archivos Venta.php, DetalleVenta.php, VentaController.php y ventas/index.php.
-- Se verificó la conexión del módulo Ventas con MySQL.
-- Se comprobó que el formulario permite seleccionar usuarios y medicamentos.
-- Se agregó el usuario Gustavo a la base de datos local para realizar pruebas.
-- Se registró una venta de prueba por S/ 0.50.
-- Se verificó que la venta aparece correctamente en la tabla de ventas.
-- Se comprobó la visualización de la interfaz del módulo.
-- Se confirmó que la rama Alexandra-Robladillo está sincronizada con GitHub.
 ### Estado actual
-El módulo Ventas permite registrar y visualizar ventas en el entorno local.
-Queda pendiente verificar mediante una prueba específica el descuento de stock por lotes.
+
+El módulo Ventas permite registrar y visualizar ventas correctamente en el entorno local. Se realizaron ajustes en los archivos del modelo, controlador y vista, manteniendo la estructura MVC y el funcionamiento existente.
+
+Queda pendiente comprobar mediante una prueba específica el descuento del stock por lotes.
