@@ -22,7 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guard
         }
     }
 }
-if (isset($_GET['ok'])) $mensaje = 'Venta registrada correctamente. Número: ' . (int)$_GET['ok'];
+if (isset($_GET['ok'])) { 
+    $mensaje = 'Venta registrada correctamente. Número: ' . (int)$_GET['ok'];
+}
 $ventas = $controlador->index();
 ?>
 <h2>Ventas</h2>
