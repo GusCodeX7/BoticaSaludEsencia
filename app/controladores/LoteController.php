@@ -26,4 +26,5 @@ class LoteController
             $fecha_vencimiento
         );
     }
+    
 }

@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../controladores/MedicamentoController.php';
 $controlador = new LoteController();
 $medicamentos = (new MedicamentoController())->index();
 $mensaje = '';
+$medicamentoElegido = (int)($_GET['id_medicamento'] ?? 0);
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guardar_lote') {
     $id = filter_var($_POST['id_medicamento'] ?? '', FILTER_VALIDATE_INT);
     $cantidad = filter_var($_POST['cantidad'] ?? '', FILTER_VALIDATE_INT);
@@ -31,7 +32,7 @@ $lotes = $controlador->listar();
 <form method="post" action="?modulo=lotes">
 <input type="hidden" name="accion" value="guardar_lote">
 <label>Medicamento<select name="id_medicamento" required><option value="">Seleccionar</option>
-<?php foreach ($medicamentos as $m): ?><option value="<?= (int)$m['id_medicamento'] ?>"><?= htmlspecialchars($m['nombre']) ?></option><?php endforeach; ?>
+<?php foreach ($medicamentos as $m): ?><option value="<?= (int)$m['id_medicamento'] ?>" <?= $medicamentoElegido === (int)$m['id_medicamento'] ? 'selected' : '' ?>><?= htmlspecialchars($m['nombre']) ?></option><?php endforeach; ?>
 </select></label>
 <label>Código de lote<input name="codigo_lote" required maxlength="50"></label>
 <label>Cantidad<input name="cantidad" type="number" min="1" required></label>
@@ -43,4 +44,5 @@ $lotes = $controlador->listar();
 <?php foreach ($lotes as $l): ?>
 <tr><td><?= (int)$l['id_lote'] ?></td><td><?= htmlspecialchars($l['medicamento']) ?></td><td><?= htmlspecialchars($l['codigo_lote']) ?></td><td><?= (int)$l['cantidad'] ?></td><td><?= htmlspecialchars($l['fecha_vencimiento']) ?></td></tr>
 <?php endforeach; ?>
+
 </table>
