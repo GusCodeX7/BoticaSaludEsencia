@@ -30,9 +30,9 @@ El módulo Usuarios cuenta con su modelo,
 controlador y vista inicial.
 
 La conexión a MySQL fue verificada correctamente.
----
 
 ## Hito 3 - Correcciones del módulo Ventas
+
 
 ### Integrante: Alexandra-Robladillo
 **Rama:** Alexandra-Robladillo
@@ -59,4 +59,39 @@ La conexión a MySQL fue verificada correctamente.
 
 El módulo Ventas permite registrar y visualizar ventas correctamente en el entorno local. Se realizaron ajustes en los archivos del modelo, controlador y vista, manteniendo la estructura MVC y el funcionamiento existente.
 
-Queda pendiente comprobar mediante una prueba específica el descuento del stock por lotes.
+## Hito 2 - Avance individual
+
+### Integrante: Crispin Gustavo
+**Usuario GitHub:** GusCodeX7  
+**Rama:** Crispin-Gustavo
+
+### Actividades realizadas
+
+- Se actualizó el modelo Usuario.php.
+- Se modificó la vista usuarios/index.php.
+- Se agregó el modelo Inventario.php.
+- Se creó la vista inventario/index.php.
+- Se incorporó la vista alertas/index.php.
+- Se actualizó public/index.php para integrar los módulos.
+- Se agregó y organizó public/css/estilo.css.
+- Se realizó un Pull Request de Crispin-Gustavo hacia main.
+
+### Archivos trabajados
+
+- app/modelos/Usuario.php
+- app/vistas/usuarios/index.php
+- app/modelos/Inventario.php
+- app/vistas/inventario/index.php
+- app/vistas/alertas/index.php
+- public/index.php
+- public/css/estilo.css
+
+### Estado
+
+- Los módulos Inventario y Alertas fueron probados 
+- Se verificó el funcionamiento del
+botón Reponer.
+
+- La rama Crispin-Gustavo contiene los cambios
+correspondientes al avance individual del Hito.
+

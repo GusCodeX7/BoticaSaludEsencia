@@ -20,4 +20,11 @@ class Usuario
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
+
+    public function registrar(string $nombre, string $usuario, string $clave, string $rol): bool
+    {
+        $sql = 'INSERT INTO usuarios (nombre, usuario, clave, rol) VALUES (?, ?, ?, ?)';
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$nombre, $usuario, password_hash($clave, PASSWORD_DEFAULT), $rol]);
+    }
 }
