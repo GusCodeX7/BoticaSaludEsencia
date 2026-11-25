@@ -19,6 +19,7 @@ class LoteController
 
         $lote = new Lote();
 
+        
         return $lote->registrar(
             $id_medicamento,
             $codigo_lote,
@@ -26,4 +27,5 @@ class LoteController
             $fecha_vencimiento
         );
     }
+
 }

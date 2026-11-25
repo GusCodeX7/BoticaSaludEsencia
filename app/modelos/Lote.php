@@ -35,9 +35,13 @@ class Lote
 
         return $consulta->execute([
             $id_medicamento,
+            
             $codigo_lote,
             $cantidad,
             $fecha_vencimiento
         ]);
+        
+        
     }
+    
 }
