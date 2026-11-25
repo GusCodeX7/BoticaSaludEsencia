@@ -30,34 +30,68 @@ El módulo Usuarios cuenta con su modelo,
 controlador y vista inicial.
 
 La conexión a MySQL fue verificada correctamente.
----
+
+## Hito 3 - Correcciones del módulo Ventas
 
 
 ### Integrante: Alexandra-Robladillo
-*Rama:* Alexandra-Robladillo
+**Rama:** Alexandra-Robladillo
 
 ### Actividades realizadas
 
-- Se incorporaron los archivos compartidos del proyecto utilizando la estructura MVC.
-- Se desarrolló el modelo Venta.php para consultar y registrar ventas.
-- Se creó el modelo DetalleVenta.php para registrar y consultar los medicamentos vendidos.
-- Se implementó VentaController.php para comunicar el modelo con la vista.
-- Se creó la vista ventas/index.php con el formulario de registro y la tabla de ventas.
-- Se implementó el cálculo del total de las ventas.
-- Se agregó el descuento automático del stock de medicamentos por lotes.
-- Se implementaron transacciones MySQL para guardar las ventas y sus detalles.
-- Se verificó la sintaxis de los modelos y del controlador utilizando PHP 8.3.30.
-- Se subieron los cambios a la rama Alexandra-Robladillo en GitHub.
+- Se revisó el funcionamiento de los archivos del módulo Ventas.
+- Se agregó una validación del precio en el modelo Venta.php.
+- Se ajustó el formato del constructor en DetalleVenta.php.
+- Se organizó el método guardar() en VentaController.php.
+- Se mejoró la presentación del código en ventas/index.php.
+- Se verificó la sintaxis de los archivos PHP.
+- Se prepararon los commits individuales con el prefijo fix:.
+- Se realizaron pruebas de registro y visualización de ventas en el entorno local.
 
 ### Commits realizados
 
-1. Agregar modelos de ventas y detalle de ventas
-2. Agregar controlador de ventas
-3. Agregar vista del modulo de ventas
-4. Actualizar registro de ventas y control de stock
+1. fix: valida el precio en el modelo Venta
+2. fix: ordena el constructor de DetalleVenta
+3. fix: ajusta el formato de VentaController
+4. fix: ajusta el formato de la vista de ventas
 
-### Estado del módulo
+### Estado actual
 
-El módulo Ventas cuenta con sus modelos, controlador y vista de registro.
+El módulo Ventas permite registrar y visualizar ventas correctamente en el entorno local. Se realizaron ajustes en los archivos del modelo, controlador y vista, manteniendo la estructura MVC y el funcionamiento existente.
 
-Se implementó el registro de ventas, el cálculo del total y el descuento de stock mediante transacciones.
+## Hito 2 - Avance individual
+
+### Integrante: Crispin Gustavo
+**Usuario GitHub:** GusCodeX7  
+**Rama:** Crispin-Gustavo
+
+### Actividades realizadas
+
+- Se actualizó el modelo Usuario.php.
+- Se modificó la vista usuarios/index.php.
+- Se agregó el modelo Inventario.php.
+- Se creó la vista inventario/index.php.
+- Se incorporó la vista alertas/index.php.
+- Se actualizó public/index.php para integrar los módulos.
+- Se agregó y organizó public/css/estilo.css.
+- Se realizó un Pull Request de Crispin-Gustavo hacia main.
+
+### Archivos trabajados
+
+- app/modelos/Usuario.php
+- app/vistas/usuarios/index.php
+- app/modelos/Inventario.php
+- app/vistas/inventario/index.php
+- app/vistas/alertas/index.php
+- public/index.php
+- public/css/estilo.css
+
+### Estado
+
+- Los módulos Inventario y Alertas fueron probados 
+- Se verificó el funcionamiento del
+botón Reponer.
+
+- La rama Crispin-Gustavo contiene los cambios
+correspondientes al avance individual del Hito.
+

@@ -63,7 +63,10 @@ class Venta
                 }
 
                 $precio = (float) $medicamento['precio'];
-                $subtotal = round($precio * $cantidad, 2);
+                if ($precio < 0) {
+                throw new Exception("El precio del medicamento no es válido.");
+              }
+              $subtotal = round($precio * $cantidad, 2);
 
                 // Buscar lotes disponibles y no vencidos
                 $sql = "SELECT id_lote, cantidad
