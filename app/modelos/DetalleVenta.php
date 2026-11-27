@@ -4,10 +4,7 @@ require_once __DIR__ . '/../config/Conexion.php';
 class DetalleVenta
 {
     private PDO $db;
-    public function __construct() 
-    { 
-        $this->db = Conexion::conectar(); 
-    }
+    public function __construct() { $this->db = Conexion::conectar(); }
 
     // Lista los detalles de una venta. Recibe el ID de venta y retorna un arreglo.
     public function listarPorVenta(int $idVenta): array
