@@ -1,124 +1,341 @@
 
 <?php
-require_once __DIR__ . '/../../controladores/VentaController.php';
-require_once __DIR__ . '/../../controladores/UsuarioController.php';
-require_once __DIR__ . '/../../controladores/MedicamentoController.php';
 
-$controlador = new VentaController();
-$controladorUsuario = new UsuarioController();
-$controladorMedicamento = new MedicamentoController();
+if (!defined('ENTRADA')) {
+    http_response_code(403);
+    exit;
+}
 
-$usuarios = $controladorUsuario->index();
-$medicamentos = $controladorMedicamento->index();
+require_once __DIR__ . '/../../modelos/Venta.php';
+require_once __DIR__ . '/../../modelos/Medicamento.php';
+require_once __DIR__ . '/../../modelos/Presentacion.php';
 
-$mensaje = "";
+$modelo = new Venta();
+$modeloMedicamento = new Medicamento();
 
+$medicamentos = $modeloMedicamento->listar();
+$mensaje = '';
+$detalles = [];
+
+if (!isset($_SESSION['carrito'])) {
+    $_SESSION['carrito'] = [];
+}
+
+// Procesar las acciones de venta
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $idUsuario = filter_var($_POST['id_usuario'] ?? '', FILTER_VALIDATE_INT);
-    $idMedicamento = filter_var($_POST['id_medicamento'] ?? '', FILTER_VALIDATE_INT);
-    $cantidad = filter_var($_POST['cantidad'] ?? '', FILTER_VALIDATE_INT);
+    try {
+        $accion = $_POST['accion'];
 
-    if ($idUsuario <= 0 || $idMedicamento <= 0 || $cantidad <= 0) {
-        $mensaje = "Selecciona usuario, medicamento y una cantidad válida.";
+        if ($accion == 'anular') {
 
-    } else {
-        try {
-            $detalle = [
-                [
-                    'id_medicamento' => $idMedicamento,
-                    'cantidad' => $cantidad
-                ]
-            ];
+            $idVenta = (int)$_POST['id_venta'];
+            $motivo = trim($_POST['motivo']);
 
-            $idVenta = $controlador->guardar($idUsuario, $detalle);
+            $modelo->anular($idVenta, $motivo);
+            $mensaje = 'Venta anulada correctamente.';
 
-            header('Location: ?modulo=ventas&ok=' . (int)$idVenta);
+        } elseif ($accion == 'agregar') {
+
+            $partes = explode(':', $_POST['producto']);
+            $idMedicamento = (int)$partes[0];
+            $tipo = $partes[1] ?? '';
+            $cantidad = filter_var($_POST['cantidad'], FILTER_VALIDATE_INT);
+            $encontrado = false;
+
+            foreach ($medicamentos as $medicamento) {
+
+                $presentaciones = presentaciones($medicamento);
+
+                if ($medicamento['id_medicamento'] == $idMedicamento &&
+                    isset($presentaciones[$tipo]) && $cantidad > 0) {
+
+                    $_SESSION['carrito'][] = [
+                        'id_medicamento' => $idMedicamento,
+                        'presentacion' => $tipo,
+                        'cantidad' => $cantidad,
+                        'nombre' => $medicamento['nombre'],
+                        'etiqueta' => $presentaciones[$tipo],
+                        'precio' => precioPresentacion($medicamento, $tipo)
+                    ];
+
+                    $encontrado = true;
+                    break;
+                }
+            }
+
+            if (!$encontrado) {
+                $mensaje = 'Selecciona un producto y una cantidad válida.';
+            }
+
+        } elseif ($accion == 'quitar') {
+
+            $fila = (int)$_POST['fila'];
+            unset($_SESSION['carrito'][$fila]);
+
+        } elseif ($accion == 'guardar') {
+
+            $idUsuario = (int)$_SESSION['id_usuario'];
+
+            $idVenta = $modelo->registrarCompleta(
+                $idUsuario,
+                $_SESSION['carrito']
+            );
+
+            $_SESSION['carrito'] = [];
+
+            header('Location: ?modulo=ventas&ok=' . $idVenta);
             exit;
-
-        } catch (Exception $e) {
-            $mensaje = $e->getMessage();
         }
+
+    } catch (Exception $error) {
+        $mensaje = $error->getMessage();
     }
 }
 
 if (isset($_GET['ok'])) {
-    $mensaje = "Venta registrada correctamente. Número: " . (int)$_GET['ok'];
+    $mensaje = 'Venta registrada correctamente. Número: '
+               . (int)$_GET['ok'];
 }
 
-$ventas = $controlador->index();
+$ventas = $modelo->listar();
+
+// Consultar el detalle de una venta
+if (isset($_GET['ver']) && (int)$_GET['ver'] > 0) {
+
+    $idVenta = (int)$_GET['ver'];
+    $conexion = Conexion::conectar();
+
+    $sql = "SELECT d.*, m.nombre AS medicamento
+            FROM detalle_ventas d
+            INNER JOIN medicamentos m
+            ON m.id_medicamento = d.id_medicamento
+            WHERE d.id_venta = ?";
+
+    $consulta = $conexion->prepare($sql);
+    $consulta->execute([$idVenta]);
+    $detalles = $consulta->fetchAll();
+}
+
 ?>
 
 <h2>Ventas</h2>
 
-<p>Registro de una venta con un medicamento. El total se calcula automáticamente y se descuenta del lote vigente.</p>
+<p>
+    Registra ventas por caja, blíster o unidad.
+    El stock se descuenta de los lotes vigentes.
+</p>
 
-<?php if ($mensaje != "") { ?>
+<?php if ($mensaje != '') { ?>
     <p class="mensaje">
         <?php echo htmlspecialchars($mensaje); ?>
     </p>
 <?php } ?>
 
-<form method="post" action="?modulo=ventas">
+<!-- Formulario para agregar medicamentos -->
 
-    <label>
-        Usuario
-        <select name="id_usuario" required>
-            <option value="">Seleccionar</option>
+<form method="post">
 
-            <?php foreach ($usuarios as $u) { ?>
+    <input type="hidden" name="accion" value="agregar">
 
-                <option value="<?php echo (int)$u['id_usuario']; ?>">
-                    <?php echo htmlspecialchars($u['nombre']); ?>
+    <label>Medicamento y presentación</label>
+
+    <select name="producto" required>
+
+        <option value="">Seleccionar medicamento</option>
+
+        <?php foreach ($medicamentos as $medicamento) { ?>
+
+            <?php foreach (presentaciones($medicamento) as $tipo => $nombre) { ?>
+
+                <option value="<?php echo $medicamento['id_medicamento'] . ':' . $tipo; ?>">
+
+                    <?php
+                    echo htmlspecialchars(
+                        $medicamento['nombre'] . ' - ' .
+                        $nombre . ' - S/ ' .
+                        precioPresentacion($medicamento, $tipo)
+                    );
+                    ?>
+
                 </option>
 
             <?php } ?>
-        </select>
-    </label>
 
-    <label>
-        Medicamento
-        <select name="id_medicamento" required>
-            <option value="">Seleccionar</option>
+        <?php } ?>
 
-            <?php foreach ($medicamentos as $m) { ?>
+    </select>
 
-                <option value="<?php echo (int)$m['id_medicamento']; ?>">
-                    <?php echo htmlspecialchars($m['nombre']); ?>
-                    - S/ <?php echo number_format($m['precio'], 2); ?>
-                </option>
+    <label>Cantidad</label>
 
-            <?php } ?>
-        </select>
-    </label>
+    <input type="number" name="cantidad" min="1" required>
 
-    <label>
-        Cantidad
-        <input name="cantidad" type="number" min="1" required>
-    </label>
-
-    <button type="submit">Registrar venta</button>
+    <button type="submit">Agregar medicamento</button>
 
 </form>
 
-<h3>Ventas registradas</h3>
+<!-- Carrito de venta -->
+
+<h3>Detalle de la venta actual</h3>
 
 <table>
+
     <tr>
-        <th>ID</th>
-        <th>Usuario</th>
-        <th>Fecha</th>
-        <th>Total (S/)</th>
+        <th>Medicamento</th>
+        <th>Presentación</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+        <th>Acción</th>
     </tr>
 
-    <?php foreach ($ventas as $v) { ?>
+    <?php
+    $total = 0;
+
+    foreach ($_SESSION['carrito'] as $fila => $producto) {
+
+        $subtotal = $producto['cantidad'] * $producto['precio'];
+        $total = $total + $subtotal;
+    ?>
 
         <tr>
-            <td><?php echo (int)$v['id_venta']; ?></td>
-            <td><?php echo htmlspecialchars($v['usuario_nombre']); ?></td>
-            <td><?php echo htmlspecialchars($v['fecha_venta']); ?></td>
-            <td><?php echo number_format($v['total'], 2); ?></td>
+            <td><?php echo htmlspecialchars($producto['nombre']); ?></td>
+            <td><?php echo htmlspecialchars($producto['etiqueta']); ?></td>
+            <td><?php echo $producto['cantidad']; ?></td>
+            <td><?php echo number_format($subtotal, 2); ?></td>
+
+            <td>
+                <form method="post">
+
+                    <input type="hidden" name="accion" value="quitar">
+
+                    <input type="hidden" name="fila"
+                           value="<?php echo $fila; ?>">
+
+                    <button type="submit">Quitar</button>
+
+                </form>
+            </td>
         </tr>
 
     <?php } ?>
+
 </table>
+
+<h3>Total: S/ <?php echo number_format($total, 2); ?></h3>
+
+<?php if (!empty($_SESSION['carrito'])) { ?>
+
+    <form method="post">
+
+        <input type="hidden" name="accion" value="guardar">
+
+        <button type="submit">Registrar venta</button>
+
+    </form>
+
+<?php } ?>
+
+<!-- Historial de ventas -->
+
+<h3>Historial de ventas</h3>
+
+<div class="tabla">
+
+    <table>
+
+        <tr>
+            <th>N.º</th>
+            <th>Usuario</th>
+            <th>Fecha</th>
+            <th>Total S/</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+
+        <?php foreach ($ventas as $venta) { ?>
+
+            <tr>
+                <td><?php echo $venta['id_venta']; ?></td>
+                <td><?php echo htmlspecialchars($venta['usuario_nombre']); ?></td>
+                <td><?php echo htmlspecialchars($venta['fecha_venta']); ?></td>
+                <td><?php echo number_format($venta['total'], 2); ?></td>
+                <td><?php echo htmlspecialchars($venta['estado']); ?></td>
+
+                <td>
+
+                    <a href="?modulo=ventas&amp;ver=<?php echo $venta['id_venta']; ?>">
+                        Ver detalle
+                    </a>
+
+                    <?php if ($venta['estado'] == 'Realizada') { ?>
+
+                        <form method="post">
+
+                            <input type="hidden" name="accion" value="anular">
+
+                            <input type="hidden" name="id_venta"
+                                   value="<?php echo $venta['id_venta']; ?>">
+
+                            <label>Motivo</label>
+
+                            <input type="text" name="motivo"
+                                   maxlength="255"
+                                   placeholder="Motivo de anulación"
+                                   required>
+
+                            <button type="submit">Anular</button>
+
+                        </form>
+
+                    <?php } else { ?>
+
+                        <small>
+                            <?php echo htmlspecialchars($venta['motivo_anulacion'] ?? ''); ?>
+                        </small>
+
+                    <?php } ?>
+
+                </td>
+            </tr>
+
+        <?php } ?>
+
+    </table>
+
+</div>
+
+<!-- Detalle de una venta registrada -->
+
+<?php if (isset($_GET['ver'])) { ?>
+
+    <h3>Detalle de venta N.º <?php echo (int)$_GET['ver']; ?></h3>
+
+    <div class="tabla">
+
+        <table>
+
+            <tr>
+                <th>Medicamento</th>
+                <th>Cantidad</th>
+                <th>Presentación</th>
+                <th>Unidades descontadas</th>
+                <th>Subtotal S/</th>
+            </tr>
+
+            <?php foreach ($detalles as $detalle) { ?>
+
+                <tr>
+                    <td><?php echo htmlspecialchars($detalle['medicamento']); ?></td>
+                    <td><?php echo $detalle['cantidad']; ?></td>
+                    <td><?php echo htmlspecialchars($detalle['presentacion']); ?></td>
+                    <td><?php echo $detalle['unidades_descontadas']; ?></td>
+                    <td><?php echo number_format($detalle['subtotal'], 2); ?></td>
+                </tr>
+
+            <?php } ?>
+
+        </table>
+
+    </div>
+
+<?php } ?>
